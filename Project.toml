@@ -1,4 +1,7 @@
 [deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Gumbo = "708ec375-b3d6-5a57-a7ce-8257bf98657a"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 TidierData = "fe2206b3-d496-4ee9-a338-6a095c4ece80"
 TidierPlots = "337ecbd1-5042-4e2a-ae6f-ca776f97570a"
