@@ -54,8 +54,10 @@ function convert_file(
   # Run via PowerShell
   run_cmd = run(`powershell -NoLogo -NoProfile -Command $cmd`)
 
+
   println("--------------------------------------------------")
-  println(@sprintf("\nNew_file: %s \nfrom: %s to %s\n", new_file, from, to))
+  # println(@sprintf("\nNew_file: %s \nfrom: %s to %s\n", new_file, from, to))
+  println("\nNew_file: $new_file \nfrom: $from to $to\n")
   println("--------------------------------------------------")
 
   return run_cmd
