@@ -1,6 +1,8 @@
 # functions
 # video functions
+# function to convert a file to another format with compression
 function convert_file(
+  ;
   old_file::String,
   new_file::String,
   from::String="00:00:00",
@@ -9,18 +11,18 @@ function convert_file(
   # Choose ffmpeg command template
   if length(to) <= 4
     ffmpeg_cmd = raw"""
-     ffmpeg -i "%s" \
-       -vf "scale=-2:480" \
-       -ss %s %s \
-       -c:v libx264 -crf 23 -preset veryfast \
+     ffmpeg -i "%s" `
+       -vf "scale=-2:480" `
+       -ss %s %s `
+       -c:v libx264 -crf 23 -preset veryfast `
        "%s"
      """
   else
     ffmpeg_cmd = raw"""
-       ffmpeg -i "%s" \
-         -vf "scale=-2:480" \
-         -ss %s -to %s \
-         -c:v libx264 -crf 23 -preset veryfast \
+       ffmpeg -i "%s" `
+         -vf "scale=-2:480" `
+         -ss %s -to %s `
+         -c:v libx264 -crf 23 -preset veryfast `
          "%s"
        """
   end
@@ -31,7 +33,13 @@ function convert_file(
   end
 
   # Format command
-  cmd = Printf.format(ffmpeg_cmd, old_file, from, to, new_file)
+  cmd = Printf.format(
+    Printf.Format(ffmpeg_cmd),
+    old_file,
+    from,
+    to,
+    new_file
+  )
 
   println("-------------------------------------")
   println(cmd)
