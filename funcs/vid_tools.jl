@@ -14,6 +14,13 @@ function convert_file(
   from::String="00:00:00",
   to::String=""
 )
+  # default start time
+  if length(from) <= 7
+    error("You didn't provide a Valid from time!!")
+  elseif isfile(new_file)
+    error("File already exists: $new_file")
+  end
+
   # Choose ffmpeg command template
   if length(to) <= 4
     ffmpeg_cmd = raw"""
@@ -33,11 +40,6 @@ function convert_file(
       """
   end
 
-  # default start time
-  if length(from) <= 7
-    error("You didn't provide a Valid from time!!")
-  end
-
   # Format command
   cmd = Printf.format(
     Printf.Format(ffmpeg_cmd),
@@ -51,9 +53,8 @@ function convert_file(
   println(cmd)
   println("_____________________________________")
 
-  # Run via PowerShell
+  # Run via non interactive PowerShell
   run_cmd = run(`powershell -NoLogo -NoProfile -Command $cmd`)
-
 
   println("--------------------------------------------------")
   # println(@sprintf("\nNew_file: %s \nfrom: %s to %s\n", new_file, from, to))
