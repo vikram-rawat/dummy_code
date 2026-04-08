@@ -51,6 +51,6 @@ function convert_file(; old_file::String, new_file::String, from::String="00:00:
   catch e
     println("Error executing ffmpeg: $e")
   end
-end
+end # func
 
 end # module
