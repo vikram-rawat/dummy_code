@@ -25,7 +25,7 @@ function convert_file(; old_file::String, new_file::String, from::String="00:00:
 
   # 3. Build Command Components
   # Using an array is cleaner for 'run' in Julia
-  args = ["ffmpeg", "-i", old_file, overwrite_flag]
+  args = ["ffmpeg", overwrite_flag, "-i", old_file]
 
   # Video filters and seeking
   append!(args, ["-vf", "scale=-2:480", "-ss", from])
