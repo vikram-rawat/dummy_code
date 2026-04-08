@@ -1,82 +1,56 @@
-# video functions
-
 module vid_tools
 
 export convert_file
-
 using Printf
 
-# function to convert a file to another format with compression
-function convert_file(
-  ; old_file::String,
-  new_file::String,
-  from::String="00:00:00",
-  to::String=""
-)
-  # Validate start time
-  if length(from) <= 7
-    error("You didn't provide a valid 'from' time!!")
+function convert_file(; old_file::String, new_file::String, from::String="00:00:00", to::String="")
+  # 1. Validation
+  if length(from) < 8
+    error("Invalid 'from' time format. Use HH:MM:SS")
   end
 
-  # Interactive overwrite check
-  overwrite_flag = "-y"  # default
+  # 2. Interactive Overwrite
+  overwrite_flag = "-y"
   if isfile(new_file)
-    println("File already exists: $new_file")
-    println("Do you want to overwrite it? [Y/N]: ")
-    flush(stdout)  # ensure prompt is shown immediately
-
-    answer = Base.prompt("", default="n") |> strip |> lowercase
+    print("File already exists: $new_file\nDo you want to overwrite it? [y/n]: ")
+    flush(stdout)
+    answer = readline() |> strip |> lowercase
     if answer in ["y", "yes"]
       overwrite_flag = "-y"
-    elseif answer in ["n", "no"]
-      overwrite_flag = "-n"
     else
-      error("Invalid input. Please type Y or N.")
+      println("Aborting process.")
+      return nothing
     end
   end
 
-  # Choose ffmpeg command template
-  if isempty(to) || length(to) <= 4
-    ffmpeg_cmd = raw"""
-    ffmpeg -i "%s" %s `
-      -vf "scale=-2:480" `
-      -ss %s %s `
-      -c:v libx264 -crf 23 -preset veryfast `
-      "%s"
-    """
-  else
-    ffmpeg_cmd = raw"""
-    ffmpeg -i "%s" %s `
-      -vf "scale=-2:480" `
-      -ss %s -to %s `
-      -c:v libx264 -crf 23 -preset veryfast `
-      "%s"
-    """
+  # 3. Build Command Components
+  # Using an array is cleaner for 'run' in Julia
+  args = ["ffmpeg", "-i", old_file, overwrite_flag]
+
+  # Video filters and seeking
+  append!(args, ["-vf", "scale=-2:480", "-ss", from])
+
+  if !isempty(to) && length(to) >= 8
+    append!(args, ["-to", to])
   end
 
-  # Format command
-  cmd = Printf.format(
-    Printf.Format(ffmpeg_cmd),
-    old_file,
-    overwrite_flag,
-    from,
-    to,
-    new_file
-  )
+  # Encoding settings
+  append!(args, ["-c:v", "libx264", "-crf", "23", "-preset", "veryfast", new_file])
 
+  # 4. Display and Run
+  full_cmd_str = join(args, " ")
   println("-------------------------------------")
-  println(cmd)
-  println("_____________________________________")
+  println("Executing: $full_cmd_str")
+  println("-------------------------------------")
 
-  # Run via PowerShell
-  run_cmd = run(`powershell -NoLogo -NoProfile -Command $cmd`)
-
-  println("--------------------------------------------------")
-  println("\nNew_file: $new_file \nfrom: $from to $to\n")
-  println("--------------------------------------------------")
-
-  return run_cmd
-
-end # func
+  # Run directly (Julia handles the shell escaping for you)
+  try
+    run_cmd = run(`$args`)
+    println("\nSuccess! File saved to: $new_file")
+    return run_cmd
+  catch e
+    println("Error executing ffmpeg: $e")
+  end
+end
 
 end # module
