@@ -1,5 +1,11 @@
-# functions
 # video functions
+
+module vid_tools
+
+export convert_file
+
+using Printf
+
 # function to convert a file to another format with compression
 function convert_file(
   ;
@@ -11,20 +17,20 @@ function convert_file(
   # Choose ffmpeg command template
   if length(to) <= 4
     ffmpeg_cmd = raw"""
-     ffmpeg -i "%s" `
-       -vf "scale=-2:480" `
-       -ss %s %s `
-       -c:v libx264 -crf 23 -preset veryfast `
-       "%s"
-     """
+    ffmpeg -i "%s" `
+      -vf "scale=-2:480" `
+      -ss %s %s `
+      -c:v libx264 -crf 23 -preset veryfast `
+      "%s"
+    """
   else
     ffmpeg_cmd = raw"""
-       ffmpeg -i "%s" `
-         -vf "scale=-2:480" `
-         -ss %s -to %s `
-         -c:v libx264 -crf 23 -preset veryfast `
-         "%s"
-       """
+      ffmpeg -i "%s" `
+        -vf "scale=-2:480" `
+        -ss %s -to %s `
+        -c:v libx264 -crf 23 -preset veryfast `
+        "%s"
+      """
   end
 
   # default start time
@@ -46,8 +52,7 @@ function convert_file(
   println("_____________________________________")
 
   # Run via PowerShell
-  run_cmd = run(`powershell -Command $cmd`)
-
+  run_cmd = run(`powershell -NoLogo -NoProfile -Command $cmd`)
 
   println("--------------------------------------------------")
   println(@sprintf("\nNew_file: %s \nfrom: %s to %s\n", new_file, from, to))
@@ -55,4 +60,6 @@ function convert_file(
 
   return run_cmd
 
-end
+end # func
+
+end # module
