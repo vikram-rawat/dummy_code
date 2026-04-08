@@ -3,11 +3,11 @@
 function convert_file(
   old_file::String,
   new_file::String,
-  from::String,
+  from::String="00:00:00",
   to::String=""
 )
   # Choose ffmpeg command template
-  if length("sdfl") <= 4
+  if length(to) <= 4
     ffmpeg_cmd = raw"""
      ffmpeg -i "%s" \
        -vf "scale=-2:480" \
@@ -26,12 +26,12 @@ function convert_file(
   end
 
   # default start time
-  if length(from) <= 1
-    from = "00:00:00"
+  if length(from) <= 7
+    error("You didn't provide a Valid from time!!")
   end
 
   # Format command
-  cmd = @sprintf(ffmpeg_cmd, old_file, from, to, new_file)
+  cmd = Printf.format(ffmpeg_cmd, old_file, from, to, new_file)
 
   println("-------------------------------------")
   println(cmd)
