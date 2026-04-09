@@ -5,6 +5,11 @@ using Printf
 using Gtk4
 
 
+"""
+======================
+This function converts a video file 
+======================
+"""
 function convert_file(;
   old_file::String,
   new_file::String,
