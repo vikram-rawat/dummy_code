@@ -2,25 +2,25 @@ module vid_tools
 
 export convert_file
 using Printf
+using Gtk4
 
-function convert_file(; old_file::String, new_file::String, from::String="00:00:00", to::String="")
+
+function convert_file(;
+  old_file::String,
+  new_file::String,
+  from::String="00:00:00",
+  to::String=""
+)
   # 1. Validation
   if length(from) < 8
     error("Invalid 'from' time format. Use HH:MM:SS")
   end
 
   # 2. Interactive Overwrite
-  overwrite_flag = "-y"
+  overwrite_flag = "-n"
   if isfile(new_file)
-    print("File already exists: $new_file\nDo you want to overwrite it? [y/n]: ")
-    flush(stdout)
-    answer = readline() |> strip |> lowercase
-    if answer in ["y", "yes"]
-      overwrite_flag = "-y"
-    else
-      println("Aborting process.")
-      return nothing
-    end
+    result = Gtk4.ask_dialog("File already exists. Do you want to overwrite?")
+    overwrite_flag = result ? "-y" : "-n"
   end
 
   # 3. Build Command Components

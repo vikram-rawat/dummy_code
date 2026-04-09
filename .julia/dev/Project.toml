@@ -1,6 +1,7 @@
 [deps]
 AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
 Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
+Gtk4 = "9db2cae5-386f-4011-9d63-a5602296539b"
 Gumbo = "708ec375-b3d6-5a57-a7ce-8257bf98657a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"

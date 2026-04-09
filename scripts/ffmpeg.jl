@@ -9,11 +9,3 @@ convert_file(
   to="00:00:05"
 )
 
-function ask_user()
-  print("Continue? [y/n]: ")
-  flush(stdout)
-  answer = readline(stdin)
-  return answer
-end
-
-res = ask_user()
